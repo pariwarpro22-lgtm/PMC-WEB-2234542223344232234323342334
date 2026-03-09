@@ -100,25 +100,35 @@
             gap: 5px;
         }
 
-        .verified-badge {
+        /* Facebook-style SVG Badges */
+        .verified-badge-svg {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            font-size: 10px;
-            margin-left: 5px;
+            margin-left: 4px;
         }
 
-        .verified-badge.blue {
-            background: #1da1f2;
-            color: white;
+        .verified-badge-svg svg {
+            width: 18px;
+            height: 18px;
         }
 
-        .verified-badge.purple {
-            background: #9146ff;
-            color: white;
+        .verified-badge-svg.blue svg .bg {
+            fill: #1da1f2;
+        }
+
+        .verified-badge-svg.purple svg .bg {
+            fill: #9146ff;
+        }
+
+        .verified-badge-svg.gold svg .bg {
+            fill: #ffd700;
+        }
+
+        .verified-badge-svg svg .check {
+            fill: white;
+            font-size: 12px;
+            font-weight: bold;
         }
 
         .user-role {
@@ -468,6 +478,9 @@
             color: #333;
             margin-bottom: 5px;
             font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .news-content {
@@ -488,6 +501,9 @@
         .news-author {
             font-size: 10px;
             color: #999;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .news-author i {
@@ -509,6 +525,9 @@
             font-size: 14px;
             color: #333;
             margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .booking-info p {
@@ -628,14 +647,21 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
+            gap: 10px;
             margin-bottom: 10px;
         }
 
-        .badge-preview .verified-badge {
-            width: 24px;
-            height: 24px;
-            font-size: 14px;
+        .badge-preview-svg svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .badge-preview-svg.blue svg .bg {
+            fill: #1da1f2;
+        }
+
+        .badge-preview-svg.purple svg .bg {
+            fill: #9146ff;
         }
 
         .category-select {
@@ -829,9 +855,8 @@
             <div class="user-info">
                 <div class="user-name" id="userNameDisplay">
                     Loading...
-                    <span id="userBadge" class="verified-badge" style="display:none;"></span>
                 </div>
-                <div class="user-role">Customer</div>
+                <div class="user-role" id="userRoleDisplay">Customer</div>
             </div>
         </div>
         <button class="logout-btn" onclick="logout()">
@@ -845,9 +870,8 @@
     <!-- Welcome Banner -->
     <div class="welcome-banner">
         <div class="welcome-text">
-            <h1>
+            <h1 id="welcomeHeading">
                 Welcome back, <span id="welcomeName">User</span>!
-                <span id="welcomeBadge" class="verified-badge" style="display: none;"></span>
             </h1>
             <p>Book your dream home construction with Pariwar Multipurpose Company</p>
         </div>
@@ -1089,14 +1113,24 @@
                 <div class="badge-options">
                     <div class="badge-option" onclick="selectRequestBadge('blue')" id="requestBadgeBlue">
                         <div class="badge-preview">
-                            <span class="verified-badge blue"><i class="fas fa-check"></i></span>
+                            <div class="badge-preview-svg blue">
+                                <svg viewBox="0 0 24 24">
+                                    <circle class="bg" cx="12" cy="12" r="10"/>
+                                    <text class="check" x="7" y="17" font-size="12" font-weight="bold" fill="white">✓</text>
+                                </svg>
+                            </div>
                             <span style="font-weight: 600;">Blue Badge</span>
                         </div>
                         <p style="font-size: 11px; color: #999;">For customers/homeowners</p>
                     </div>
                     <div class="badge-option" onclick="selectRequestBadge('purple')" id="requestBadgePurple">
                         <div class="badge-preview">
-                            <span class="verified-badge purple"><i class="fas fa-check"></i></span>
+                            <div class="badge-preview-svg purple">
+                                <svg viewBox="0 0 24 24">
+                                    <circle class="bg" cx="12" cy="12" r="10"/>
+                                    <text class="check" x="7" y="17" font-size="12" font-weight="bold" fill="white">✓</text>
+                                </svg>
+                            </div>
                             <span style="font-weight: 600;">Purple Badge</span>
                         </div>
                         <p style="font-size: 11px; color: #999;">For workers/contractors</p>
@@ -1177,300 +1211,326 @@
 
 <!-- Firebase SDK -->
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getDatabase, ref, push, set, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, push, set, onValue, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
-apiKey: "AIzaSyBBF0xmwpheilz9CM5jbUn0_wZLU108B0I",
-authDomain: "pariwar-multinational-company.firebaseapp.com",
-databaseURL: "https://pariwar-multinational-company-default-rtdb.firebaseio.com/",
-projectId: "pariwar-multinational-company",
-storageBucket: "pariwar-multinational-company.appspot.com",
-messagingSenderId: "496150499168",
-appId: "1:496150499168:web:5628cc7c820d2cf285d805"
+    apiKey: "AIzaSyBBF0xmwpheilz9CM5jbUn0_wZLU108B0I",
+    authDomain: "pariwar-multinational-company.firebaseapp.com",
+    databaseURL: "https://pariwar-multinational-company-default-rtdb.firebaseio.com/",
+    projectId: "pariwar-multinational-company",
+    storageBucket: "pariwar-multinational-company.appspot.com",
+    messagingSenderId: "496150499168",
+    appId: "1:496150499168:web:5628cc7c820d2cf285d805"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-let currentUser=null;
-let currentUserData=null;
-let selectedRequestBadge="";
-let uploadedImageUrl="";
+let currentUser = null;
+let currentUserData = null;
+let selectedRequestBadge = "";
+let uploadedImageUrl = "";
+
+/* ================= HELPER FUNCTION: Get Badge SVG ================= */
+function getBadgeSVG(color) {
+    const fillColor = color === 'blue' ? '#1da1f2' : '#9146ff';
+    return `
+        <span class="verified-badge-svg ${color}">
+            <svg viewBox="0 0 24 24">
+                <circle class="bg" cx="12" cy="12" r="10" fill="${fillColor}"/>
+                <text class="check" x="7" y="17" font-size="12" font-weight="bold" fill="white">✓</text>
+            </svg>
+        </span>
+    `;
+}
+
+/* ================= UPDATE ALL BADGE DISPLAYS ================= */
+function updateAllBadgeDisplays() {
+    if (!currentUserData) return;
+    
+    const badgeColor = currentUserData.verified;
+    const badgeSVG = badgeColor ? getBadgeSVG(badgeColor) : '';
+    
+    // Update navbar username with badge
+    const userNameDisplay = document.getElementById('userNameDisplay');
+    if (userNameDisplay) {
+        userNameDisplay.innerHTML = `${currentUserData.username || 'User'} ${badgeSVG}`;
+    }
+    
+    // Update welcome heading with badge
+    const welcomeHeading = document.getElementById('welcomeHeading');
+    if (welcomeHeading) {
+        welcomeHeading.innerHTML = `Welcome back, <span id="welcomeName">${currentUserData.username || 'User'}</span>! ${badgeSVG}`;
+    }
+    
+    // Update profile settings verification status
+    const verificationStatus = document.getElementById('verificationStatus');
+    const badgeType = document.getElementById('badgeType');
+    const userCategory = document.getElementById('userCategory');
+    
+    if (badgeColor) {
+        verificationStatus.innerHTML = badgeSVG + ' Verified';
+        badgeType.innerHTML = badgeColor === 'blue' ? 'Blue Badge' : 'Purple Badge';
+        userCategory.innerHTML = currentUserData.category || '-';
+        document.getElementById('verificationRequestForm').style.display = 'none';
+    } else {
+        verificationStatus.innerHTML = 'Not Verified';
+        badgeType.innerHTML = 'None';
+        userCategory.innerHTML = '-';
+        document.getElementById('verificationRequestForm').style.display = 'block';
+    }
+}
 
 /* ================= AUTH ================= */
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.href = "auth.html";
+        return;
+    }
 
-onAuthStateChanged(auth, async (user)=>{
+    currentUser = user;
 
-if(!user){
-window.location.href="auth.html";
-return;
-}
+    const userRef = ref(db, "users/" + user.uid);
+    const snap = await get(userRef);
 
-currentUser=user;
+    if (snap.exists()) {
+        currentUserData = snap.val();
+    } else {
+        currentUserData = {
+            username: user.displayName || user.email.split("@")[0],
+            email: user.email,
+            createdAt: Date.now(),
+            verified: false
+        };
+        await set(userRef, currentUserData);
+    }
 
-const userRef=ref(db,"users/"+user.uid);
-const snap=await get(userRef);
+    // Set username and avatar
+    const username = currentUserData.username;
+    document.getElementById('welcomeName').textContent = username;
+    document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
 
-if(snap.exists()){
-currentUserData=snap.val();
-}else{
+    // Update profile info
+    document.getElementById('profileUsername').textContent = username;
+    document.getElementById('profileEmail').textContent = currentUser.email;
 
-currentUserData={
-username:user.displayName || user.email.split("@")[0],
-email:user.email,
-createdAt:Date.now(),
-verified:false
-};
+    // Update all badge displays
+    updateAllBadgeDisplays();
 
-await set(userRef,currentUserData);
+    // Listen for real-time updates to user data
+    onValue(userRef, (snapshot) => {
+        currentUserData = snapshot.val();
+        updateAllBadgeDisplays();
+    });
 
-}
-
-const username=currentUserData.username;
-
-document.getElementById("welcomeName").textContent=username;
-document.getElementById("userAvatar").textContent=username.charAt(0).toUpperCase();
-
-document.getElementById("profileUsername").textContent=username;
-document.getElementById("profileEmail").textContent=currentUser.email;
-
-loadBookings();
-loadNews();
-
+    loadBookings();
+    loadNews();
 });
 
 /* ================= SECTIONS ================= */
-
-window.showSection=function(section){
-
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
-
-document.getElementById(section+"Section").classList.add("active");
-
+window.showSection = function(section) {
+    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.getElementById(section + "Section").classList.add("active");
+    event.target.closest('.tab-btn').classList.add('active');
 };
 
 /* ================= BOOKING ================= */
+window.submitBooking = async function() {
+    const fullName = document.getElementById("fullName").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const location = document.getElementById("location").value.trim();
+    const houseType = document.getElementById("houseType").value;
 
-window.submitBooking=async function(){
+    if (!fullName || !phone || !location) {
+        alert("Fill required fields");
+        return;
+    }
 
-const fullName=document.getElementById("fullName").value.trim();
-const phone=document.getElementById("phone").value.trim();
-const location=document.getElementById("location").value.trim();
-const houseType=document.getElementById("houseType").value;
+    const bookingRef = push(ref(db, "bookings"));
+    await set(bookingRef, {
+        userId: currentUser.uid,
+        userName: fullName,
+        phone: phone,
+        location: location,
+        houseType: houseType,
+        status: "pending",
+        createdAt: Date.now()
+    });
 
-if(!fullName||!phone||!location){
-alert("Fill required fields");
-return;
-}
-
-const bookingRef=push(ref(db,"bookings"));
-
-await set(bookingRef,{
-userId:currentUser.uid,
-userName:fullName,
-phone:phone,
-location:location,
-houseType:houseType,
-status:"pending",
-createdAt:Date.now()
-});
-
-alert("Booking submitted");
-
+    alert("Booking submitted");
+    document.getElementById("fullName").value = "";
+    document.getElementById("phone").value = "";
+    document.getElementById("location").value = "";
 };
 
 /* ================= LOAD BOOKINGS ================= */
+function loadBookings() {
+    const bookingsRef = ref(db, "bookings");
+    onValue(bookingsRef, (snap) => {
+        let html = "";
+        let total = 0;
+        let active = 0;
+        let completed = 0;
 
-function loadBookings(){
+        snap.forEach(child => {
+            const d = child.val();
+            if (d.userId !== currentUser.uid) return;
 
-const bookingsRef=ref(db,"bookings");
+            total++;
+            if (d.status === "pending" || d.status === "approved") active++;
+            if (d.status === "completed") completed++;
 
-onValue(bookingsRef,(snap)=>{
+            html += `
+                <div class="booking-item">
+                    <div class="booking-info">
+                        <h4>${d.houseType}</h4>
+                        <p><i class="fas fa-map-marker-alt"></i> ${d.location}</p>
+                    </div>
+                    <span class="booking-status status-${d.status}">${d.status}</span>
+                </div>
+            `;
+        });
 
-let html="";
-let total=0;
-
-snap.forEach(child=>{
-
-const d=child.val();
-
-if(d.userId!==currentUser.uid) return;
-
-total++;
-
-html+=`
-<div class="booking-item">
-<div class="booking-info">
-<h4>${d.houseType}</h4>
-<p><i class="fas fa-map-marker-alt"></i> ${d.location}</p>
-</div>
-<span class="booking-status status-pending">${d.status}</span>
-</div>
-`;
-
-});
-
-document.getElementById("allBookingsList").innerHTML=html;
-document.getElementById("bookingCount").textContent=total;
-
-});
-
+        document.getElementById("allBookingsList").innerHTML = html || '<p style="text-align: center; color: #999; padding: 20px;">No bookings yet</p>';
+        document.getElementById("recentBookingsList").innerHTML = html;
+        document.getElementById("bookingCount").textContent = total;
+        document.getElementById("activeCount").textContent = active;
+        document.getElementById("completedCount").textContent = completed;
+    });
 }
 
 /* ================= NEWS MODAL ================= */
-
-window.openNewsModal=function(){
-document.getElementById("newsModal").classList.add("active");
+window.openNewsModal = function() {
+    document.getElementById("newsModal").classList.add("active");
 }
 
-window.closeNewsModal=function(){
-document.getElementById("newsModal").classList.remove("active");
+window.closeNewsModal = function() {
+    document.getElementById("newsModal").classList.remove("active");
+    document.getElementById("newsTitle").value = "";
+    document.getElementById("newsContent").value = "";
+    document.getElementById("newsImage").value = "";
+    document.getElementById("imagePreview").classList.remove("show");
 }
 
 /* ================= IMAGE PREVIEW ================= */
+window.previewImage = function(input) {
+    const file = input.files[0];
+    if (!file) return;
 
-window.previewImage=function(input){
-
-const file=input.files[0];
-
-if(!file) return;
-
-const reader=new FileReader();
-
-reader.onload=function(e){
-
-const preview=document.getElementById("imagePreview");
-
-preview.src=e.target.result;
-preview.classList.add("show");
-
-}
-
-reader.readAsDataURL(file);
-
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const preview = document.getElementById("imagePreview");
+        preview.src = e.target.result;
+        preview.classList.add("show");
+    }
+    reader.readAsDataURL(file);
 }
 
 /* ================= POST NEWS ================= */
+window.postNews = async function() {
+    const title = document.getElementById("newsTitle").value.trim();
+    const content = document.getElementById("newsContent").value.trim();
 
-window.postNews=async function(){
+    if (!title || !content) {
+        alert("Fill all fields");
+        return;
+    }
 
-const title=document.getElementById("newsTitle").value.trim();
-const content=document.getElementById("newsContent").value.trim();
+    const newsRef = push(ref(db, "news"));
+    await set(newsRef, {
+        title: title,
+        content: content,
+        type: "customer",
+        author: currentUserData.username,
+        createdAt: Date.now(),
+        image: uploadedImageUrl || ""
+    });
 
-if(!title||!content){
-alert("Fill all fields");
-return;
-}
-
-const newsRef=push(ref(db,"news"));
-
-await set(newsRef,{
-title:title,
-content:content,
-type:"customer",
-author:currentUserData.username,
-createdAt:Date.now(),
-image:uploadedImageUrl || ""
-});
-
-alert("News posted");
-
-closeNewsModal();
-
+    alert("News posted");
+    closeNewsModal();
 };
 
 /* ================= LOAD NEWS ================= */
+function loadNews() {
+    const newsRef = ref(db, "news");
+    onValue(newsRef, (snap) => {
+        let allHtml = "";
+        let recentHtml = "";
+        let count = 0;
 
-function loadNews(){
+        snap.forEach(child => {
+            const d = child.val();
+            const date = new Date(d.createdAt).toLocaleDateString();
+            
+            const newsItem = `
+                <div class="news-item ${d.type}">
+                    <div class="news-header">
+                        <span class="news-badge ${d.type}">${d.type}</span>
+                        <span class="news-date">${date}</span>
+                    </div>
+                    <div class="news-title">${d.title}</div>
+                    <div class="news-content">${d.content}</div>
+                    ${d.image ? `<img src="${d.image}" class="news-image">` : ""}
+                    <div class="news-author">
+                        <i class="fas fa-user"></i> ${d.author}
+                        ${d.author === currentUserData?.username && currentUserData?.verified ? getBadgeSVG(currentUserData.verified) : ''}
+                    </div>
+                </div>
+            `;
+            
+            allHtml += newsItem;
+            if (count < 5) recentHtml += newsItem;
+            count++;
+        });
 
-const newsRef=ref(db,"news");
-
-onValue(newsRef,(snap)=>{
-
-let html="";
-
-snap.forEach(child=>{
-
-const d=child.val();
-
-html+=`
-<div class="news-item ${d.type}">
-<div class="news-header">
-<span class="news-badge ${d.type}">${d.type}</span>
-<span class="news-date">${new Date(d.createdAt).toLocaleDateString()}</span>
-</div>
-<div class="news-title">${d.title}</div>
-<div class="news-content">${d.content}</div>
-${d.image ? `<img src="${d.image}" class="news-image">` : ""}
-<div class="news-author"><i class="fas fa-user"></i> ${d.author}</div>
-</div>
-`;
-
-});
-
-document.getElementById("allNewsFeed").innerHTML=html;
-document.getElementById("recentNewsFeed").innerHTML=html;
-
-});
-
+        document.getElementById("allNewsFeed").innerHTML = allHtml || '<p style="text-align: center; color: #999; padding: 20px;">No news yet</p>';
+        document.getElementById("recentNewsFeed").innerHTML = recentHtml || '<p style="text-align: center; color: #999; padding: 20px;">No news yet</p>';
+    });
 }
 
 /* ================= VERIFICATION ================= */
-
-window.selectRequestBadge=function(type){
-
-selectedRequestBadge=type;
-
-document.querySelectorAll(".badge-option").forEach(b=>b.classList.remove("selected"));
-
-if(type==="blue"){
-document.getElementById("requestBadgeBlue").classList.add("selected");
-}else{
-document.getElementById("requestBadgePurple").classList.add("selected");
+window.selectRequestBadge = function(type) {
+    selectedRequestBadge = type;
+    document.querySelectorAll(".badge-option").forEach(b => b.classList.remove("selected"));
+    document.getElementById(type === "blue" ? "requestBadgeBlue" : "requestBadgePurple").classList.add("selected");
 }
 
-}
+window.submitVerificationRequest = async function() {
+    const category = document.getElementById("requestCategory").value;
+    const reason = document.getElementById("verificationReason").value.trim();
 
-window.submitVerificationRequest=async function(){
+    if (!selectedRequestBadge || !category || !reason) {
+        alert("Fill all verification fields");
+        return;
+    }
 
-const category=document.getElementById("requestCategory").value;
-const reason=document.getElementById("verificationReason").value.trim();
+    const reqRef = ref(db, "verificationRequests/" + currentUser.uid);
+    await set(reqRef, {
+        userId: currentUser.uid,
+        username: currentUserData.username,
+        badge: selectedRequestBadge,
+        category: category,
+        reason: reason,
+        status: "pending",
+        createdAt: Date.now()
+    });
 
-if(!selectedRequestBadge||!category||!reason){
-alert("Fill all verification fields");
-return;
-}
-
-const reqRef=ref(db,"verificationRequests/"+currentUser.uid);
-
-await set(reqRef,{
-userId:currentUser.uid,
-username:currentUserData.username,
-badge:selectedRequestBadge,
-category:category,
-reason:reason,
-status:"pending",
-createdAt:Date.now()
-});
-
-alert("Verification request submitted!");
-
+    alert("Verification request submitted!");
+    selectedRequestBadge = "";
+    document.querySelectorAll(".badge-option").forEach(b => b.classList.remove("selected"));
+    document.getElementById("requestCategory").value = "";
+    document.getElementById("verificationReason").value = "";
 }
 
 /* ================= LOGOUT ================= */
-
-window.logout=async function(){
-
-await signOut(auth);
-window.location.href="auth.html";
-
+window.logout = async function() {
+    await signOut(auth);
+    window.location.href = "auth.html";
 };
-
 </script>
 </body>
 </html>
