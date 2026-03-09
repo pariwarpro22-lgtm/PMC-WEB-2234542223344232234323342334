@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pariwar Multipurpose Company - Splash Screen</title>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        /* Splash Screen Container */
+        .splash-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease;
+        }
+
+        /* Animated Background */
+        .splash-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .splash-background span {
+            position: absolute;
+            display: block;
+            list-style: none;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            animation: animate 25s linear infinite;
+            bottom: -150px;
+        }
+
+        .splash-background span:nth-child(1) {
+            left: 25%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 0s;
+        }
+
+        .splash-background span:nth-child(2) {
+            left: 10%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 2s;
+            animation-duration: 12s;
+        }
+
+        .splash-background span:nth-child(3) {
+            left: 70%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 4s;
+        }
+
+        .splash-background span:nth-child(4) {
+            left: 40%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 0s;
+            animation-duration: 18s;
+        }
+
+        .splash-background span:nth-child(5) {
+            left: 65%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 0s;
+        }
+
+        .splash-background span:nth-child(6) {
+            left: 75%;
+            width: 110px;
+            height: 110px;
+            animation-delay: 3s;
+        }
+
+        .splash-background span:nth-child(7) {
+            left: 35%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 7s;
+        }
+
+        .splash-background span:nth-child(8) {
+            left: 50%;
+            width: 25px;
+            height: 25px;
+            animation-delay: 15s;
+            animation-duration: 45s;
+        }
+
+        .splash-background span:nth-child(9) {
+            left: 20%;
+            width: 15px;
+            height: 15px;
+            animation-delay: 2s;
+            animation-duration: 35s;
+        }
+
+        .splash-background span:nth-child(10) {
+            left: 85%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 0s;
+            animation-duration: 11s;
+        }
+
+        @keyframes animate {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+                border-radius: 0;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+                border-radius: 50%;
+            }
+        }
+
+        /* Main Content */
+        .splash-content {
+            text-align: center;
+            z-index: 1;
+            padding: 20px;
+            animation: fadeInUp 1.5s ease;
+        }
+
+        /* Logo Container */
+        .logo-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: pulse 2s infinite;
+            backdrop-filter: blur(10px);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .logo-icon {
+            font-size: 70px;
+            color: white;
+            animation: rotate 10s linear infinite;
+        }
+
+        /* Company Name */
+        .company-name {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .company-name h1 {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: slideInDown 1s ease;
+        }
+
+        .company-name .highlight {
+            color: #ffd700;
+            font-weight: 800;
+        }
+
+        .company-tagline {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 10px;
+            letter-spacing: 3px;
+            animation: slideInUp 1s ease;
+        }
+
+        /* Loading Indicator */
+        .loading-container {
+            margin-top: 40px;
+            width: 100%;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .loading-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loading-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ffd700, #ffaa00);
+            border-radius: 2px;
+            animation: loading 2.5s ease-in-out forwards;
+        }
+
+        .loading-text {
+            color: white;
+            margin-top: 15px;
+            font-size: 16px;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        .loading-dots {
+            display: inline-block;
+        }
+
+        .loading-dots:after {
+            content: '.';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+
+        /* Loading Percentage */
+        .loading-percentage {
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 18px;
+            margin-left: 5px;
+        }
+
+        /* Company Details */
+        .company-details {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            animation: fadeIn 2s ease;
+        }
+
+        .company-details p {
+            margin: 5px 0;
+        }
+
+        .company-details i {
+            margin: 0 5px;
+            color: #ffd700;
+        }
+
+        /* Skip Link */
+        .skip-link {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            z-index: 10;
+            cursor: pointer;
+        }
+
+        .skip-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 20px rgba(255, 255, 255, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60% { content: '...'; }
+            80%, 100% { content: ''; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .company-name h1 {
+                font-size: 36px;
+            }
+
+            .company-tagline {
+                font-size: 16px;
+            }
+
+            .logo-container {
+                width: 120px;
+                height: 120px;
+            }
+
+            .logo-icon {
+                font-size: 50px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .company-name h1 {
+                font-size: 28px;
+            }
+
+            .company-tagline {
+                font-size: 14px;
+            }
+
+            .logo-container {
+                width: 100px;
+                height: 100px;
+            }
+
+            .logo-icon {
+                font-size: 40px;
+            }
+            
+            .skip-link {
+                top: 10px;
+                right: 10px;
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div class="splash-container" id="splashScreen">
+        <!-- Skip Link -->
+        <a class="skip-link" onclick="skipSplash()" id="skipLink">
+            <i class="fas fa-forward"></i> Skip
+        </a>
+        
+        <!-- Animated Background -->
+        <div class="splash-background">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <!-- Main Content -->
+        <div class="splash-content">
+            <!-- Logo -->
+            <div class="logo-container">
+                <i class="fas fa-building logo-icon"></i>
+            </div>
+
+            <!-- Company Name -->
+            <div class="company-name">
+                <h1>
+                    <span class="highlight">PARIWAR</span>
+                </h1>
+                <h1>MULTIPURPOSE COMPANY</h1>
+                <div class="company-tagline">
+                    <i class="fas fa-gavel"></i> TENDER SPECIALISTS <i class="fas fa-file-contract"></i>
+                </div>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div class="loading-container">
+                <div class="loading-bar">
+                    <div class="loading-progress"></div>
+                </div>
+                <div class="loading-text">
+                    <span>Loading</span>
+                    <span class="loading-dots"></span>
+                    <span class="loading-percentage" id="loadingPercentage">0%</span>
+                </div>
+            </div>
+            
+            <!-- Redirect Message -->
+            <div style="color: rgba(255,255,255,0.6); margin-top: 20px; font-size: 14px;" id="redirectMessage">
+                <i class="fas fa-spinner fa-pulse"></i> Preparing authentication...
+            </div>
+        </div>
+
+        <!-- Company Details -->
+        <div class="company-details">
+            <p>
+                <i class="fas fa-map-marker-alt"></i> Nepal
+                <i class="fas fa-tender"></i> Government Tenders
+                <i class="fas fa-users"></i> Since 2026
+            </p>
+            <p>
+                <i class="fas fa-phone"></i> +977-9851349401
+                <i class="fas fa-envelope"></i> pariwarpro22@gmail.com
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Splash Screen JavaScript with redirect to auth.html
+        document.addEventListener('DOMContentLoaded', function() {
+            const splashScreen = document.getElementById('splashScreen');
+            const loadingPercentage = document.getElementById('loadingPercentage');
+            const redirectMessage = document.getElementById('redirectMessage');
+            
+            let percentage = 0;
+            const totalTime = 3000; // 3 seconds total
+            const intervalTime = 100; // Update every 100ms
+            const steps = totalTime / intervalTime;
+            const increment = 100 / steps;
+            
+            // Update loading percentage
+            const interval = setInterval(function() {
+                percentage += increment;
+                if (percentage <= 100) {
+                    loadingPercentage.textContent = Math.round(percentage) + '%';
+                }
+                
+                if (percentage >= 100) {
+                    clearInterval(interval);
+                    loadingPercentage.textContent = '100%';
+                    
+                    // Update message
+                    redirectMessage.innerHTML = '<i class="fas fa-check-circle"></i> Loading complete! Redirecting...';
+                    
+                    // Fade out splash screen
+                    splashScreen.style.opacity = '0';
+                    
+                    // Redirect to auth.html after fade out
+                    setTimeout(function() {
+                        redirectToAuth();
+                    }, 1000);
+                }
+            }, intervalTime);
+            
+            // Set a timeout as backup (4 seconds max)
+            setTimeout(function() {
+                if (percentage < 100) {
+                    clearInterval(interval);
+                    redirectToAuth();
+                }
+            }, 4000);
+        });
+
+        // Function to redirect to auth.html
+        function redirectToAuth() {
+            // Check if auth.html exists, if not redirect to a default page
+            // You can change this to your actual auth page URL
+            window.location.href = 'auth.html'
+        }
+
+        // Function to skip splash screen
+        function skipSplash() {
+            const splashScreen = document.getElementById('splashScreen');
+            splashScreen.style.opacity = '0';
+            
+            setTimeout(function() {
+                redirectToAuth();
+            }, 500);
+        }
+
+        // Preload auth.html to make transition faster
+        function preloadAuthPage() {
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = 'auth.html';
+            document.head.appendChild(link);
+        }
+
+        // Start preloading when page loads
+        window.addEventListener('load', preloadAuthPage);
+
+        // Handle visibility change (if user switches tabs and comes back)
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                // Tab is visible again, but we're already loading
+                console.log('Splash screen visible');
+            }
+        });
+
+        // Handle back button
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                // Page was loaded from cache (back button)
+                window.location.reload();
+            }
+        });
+
+        // Add touch event for mobile devices
+        document.addEventListener('touchstart', function(e) {
+            // Double tap to skip (for mobile)
+            if (e.touches.length === 2) {
+                skipSplash();
+            }
+        });
+
+        // Keyboard shortcut to skip (press 'S' key)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 's' || e.key === 'S') {
+                skipSplash();
+            }
+        });
+
+        // Console message for developers
+        console.log(`
+        ╔════════════════════════════════════════╗
+        ║     PARIWAR MULTIPURPOSE COMPANY       ║
+        ║         Splash Screen v1.0             ║
+        ║    Redirecting to authentication...    ║
+        ╚════════════════════════════════════════╝
+        `);
+    </script>
+</body>
+</html>
